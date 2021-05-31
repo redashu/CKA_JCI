@@ -475,6 +475,39 @@ docker logs -f  ashuc111
 
 ```
 
+## Docker image transfer. 
+
+<img src="imgtr.png">
+
+## Docker image name reality 
+
+<img src="imgname.png">
+
+## Pushing image to docker hub 
+
+```
+10174  docker  tag   python:ashuv1   dockerashu/python:ashuv1 
+❯ 
+❯ 
+❯ 
+❯ docker  login  -u dockerashu
+Password: 
+Login Succeeded
+❯ docker push dockerashu/python:ashuv1
+The push refers to repository [docker.io/dockerashu/python]
+05d53f8a9c09: Pushed 
+785d08edd1b7: Pushed 
+d3c62c886f8b: Pushed 
+2653d992f4ef: Mounted from library/centos 
+ashuv1: digest: sha256:93f18c3510534b7398ab1e5b2a5636884836ff4d8dd8fd4992caf0f5b9186892 size: 1155
+
+--
+❯ docker  logout
+Removing login credentials for https://index.docker.io/v1/
+
+```
+
+
 
 
 
