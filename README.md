@@ -195,6 +195,247 @@ default *           moby                Current DOCKER_HOST based configuration 
 
 ```
 
+### Switching to REmote docker engine 
+
+```
+❯ docker  context   use  JciRDE
+JciRDE
+❯ docker  context   ls
+NAME                TYPE                DESCRIPTION                               DOCKER ENDPOINT               KUBERNETES ENDPOINT                         ORCHESTRATOR
+JciRDE *            moby                                                          ssh://test@34.237.219.131                                                 
+default             moby                Current DOCKER_HOST based configuration   unix:///var/run/docker.sock   https://3.230.225.157:6443 (ashuproject1)   swarm
+
+
+```
+
+### creating tcp based context. 
+
+```
+10051  docker  context create   newjci  --docker  host="tcp://34.237.219.131:2375"
+10052  docker  context  use  newjci  
+10053  docker  context  ls
+10054  docker  version 
+
+```
+
+## FInal overview of docker ce 
+
+<img src="finalce.png">
+
+
+## Docker operations 
+
+### images  checking 
+
+```
+❯ docker  images
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+
+```
+
+
+### searching images on docker hub 
+
+```
+❯ docker  search   python
+NAME                             DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+python                           Python is an interpreted, interactive, objec…   6190      [OK]       
+django                           Django is a free web application framework, …   1077      [OK]       
+pypy                             PyPy is a fast, compliant alternative implem…   275       [OK]       
+nikolaik/python-nodejs           Python with Node.js                             74                   [OK]
+joyzoursky/python-chromedriver   Python with Chromedriver, for running automa…   58                   [OK]
+arm32v7/python                   Python is an interpreted, interactive, objec…   57                   
+circleci/python                  Python is an interpreted, interactive, objec…   43                   
+centos/python-35-centos7         Platform for building and running Python 3.5…   39                   
+hylang                           Hy is a Lisp dialect that translates express…   32        [OK]       
+centos/python-36-centos7    
+
+```
+
+### Downloading docker images
+
+```
+❯ docker  pull  centos
+Using default tag: latest
+latest: Pulling from library/centos
+7a0437f04f83: Pull complete 
+Digest: sha256:5528e8b1b1719d34604c87e11dcd1c0a20bedf46e83b5632cdeac91b8c04efc1
+Status: Downloaded newer image for centos:latest
+docker.io/library/centos:latest
+❯ docker  images
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+python       latest    5b3b4504ff1f   6 days ago     886MB
+ubuntu       18.04     81bcf752ac3d   11 days ago    63.1MB
+centos       latest    300e315adb2f   5 months ago   209MB
+
+```
+
+## Docker images registry options 
+
+<img src="reg.png">
+
+## creating first container with ping process
+
+```
+❯ docker  run  --name  ashuc1    alpine:latest   ping  127.0.0.1
+PING 127.0.0.1 (127.0.0.1): 56 data bytes
+64 bytes from 127.0.0.1: seq=0 ttl=255 time=0.033 ms
+64 bytes from 127.0.0.1: seq=1 ttl=255 time=0.040 ms
+64 bytes from 127.0.0.1: seq=2 ttl=255 time=0.073 ms
+64 bytes from 127.0.0.1: seq=3 ttl=255 time=0.048 ms
+64 bytes from 127.0.0.1: seq=4 ttl=255 time=0.042 ms
+64 bytes from 127.0.0.1: seq=5 ttl=255 time=0.051 ms
+64 bytes from 127.0.0.1: seq=6 ttl=255 time=0.047 ms
+64 bytes from 127.0.0.1: seq=7 ttl=255 time=0.046 ms
+64 bytes from 127.0.0.1: seq=8 ttl=255 time=0.043 ms
+64 bytes from 127.0.0.1: seq=9 ttl=255 time=0.044 ms
+^C
+--- 127.0.0.1 ping statistics ---
+10 packets transmitted, 10 packets received, 0% packet loss
+round-trip min/avg/max = 0.033/0.046/0.073 ms
+
+```
+
+### list of running containers 
+
+```
+❯ docker  ps
+CONTAINER ID   IMAGE           COMMAND            CREATED              STATUS              PORTS     NAMES
+30b58fd66f7c   alpine:latest   "ping 127.0.0.1"   55 seconds ago       Up 51 seconds                 shalomc1
+27c36187e516   alpine:latest   "ping 127.0.0.1"   About a minute ago   Up About a minute             sumitc1
+f47d536de69c   ubuntu:18.04    "/bin/bash"        18 minutes ago       Up 8 minutes                  boorish_grommet
+
+
+```
+
+### checking output of a running container 
+
+```
+❯ docker  logs   ashuc2
+PING fb.com (157.240.229.35): 56 data bytes
+64 bytes from 157.240.229.35: seq=0 ttl=48 time=1.805 ms
+64 bytes from 157.240.229.35: seq=1 ttl=48 time=1.154 ms
+64 bytes from 157.240.229.35: seq=2 ttl=48 time=1.155 ms
+64 bytes from 157.240.229.35: seq=3 ttl=48 time=1.298 ms
+64 bytes from 157.240.229.35: seq=4 ttl=48 time=1.195 ms
+64 bytes from 157.240.229.35: seq=5 ttl=48 time=1.188 ms
+64 bytes from 157.240.229.35: seq=6 ttl=48 time=1.167 ms
+64 bytes from 157.240.229.35: seq=7 ttl=48 time=1.173 ms
+64 bytes from 157.240.229.35: seq=8 ttl=48 time=1.164 ms
+64 bytes from 157.240.229.35: seq=9 ttl=
+
+```
+
+### stopping a running container 
+
+```
+❯ docker  stop  ashuc2
+ashuc2
+
+```
+
+### starting a stopped container 
+
+```
+ docker  start  ashuc2
+```
+
+## starting a child process in a running container 
+
+```
+❯ docker  exec  -d  ashuc2  ping google.com
+❯ docker  top  ashuc2
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                18458               18423               0                   07:22               ?                   00:00:00            ping fb.com
+root                31064               18423               1                   07:25               ?                   00:00:00            ping google.com
+
+```
+
+## COntainer understanding more deeploy 
+
+### it has its own file system 
+
+```
+❯ docker  exec   -i -t  ashuc2   sh
+/ # 
+/ # ls  /
+bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbin   srv    sys    tmp    usr    var
+/ # 
+
+```
+
+### it has its own process
+
+```
+/ # ps  -e
+PID   USER     TIME  COMMAND
+    1 root      0:00 ping fb.com
+    8 root      0:00 ping google.com
+   14 root      0:00 sh
+   21 root      0:00 ps -e
+   
+ ```
+ 
+ ### each container will have its own IP 
+ 
+ ```
+ / # ifconfig 
+eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:06  
+          inet addr:172.17.0.6  Bcast:172.17.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:1085 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:1067 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:103426 (101.0 KiB)  TX bytes:102374 (99.9 KiB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+
+```
+
+### history 
+
+```
+❯ docker  exec   -i -t  ashuc2   sh
+/ # 
+/ # ls  /
+bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbin   srv    sys    tmp    usr    var
+/ # ps  -e
+PID   USER     TIME  COMMAND
+    1 root      0:00 ping fb.com
+    8 root      0:00 ping google.com
+   14 root      0:00 sh
+   21 root      0:00 ps -e
+/ # ifconfig 
+eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:06  
+          inet addr:172.17.0.6  Bcast:172.17.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:1085 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:1067 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:103426 (101.0 KiB)  TX bytes:102374 (99.9 KiB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+/ # exit
+
+
+```
+
+
+
 
 
 
