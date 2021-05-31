@@ -433,6 +433,30 @@ lo        Link encap:Local Loopback
 
 
 ```
+## Build new docker images 
+
+<img src="imgbuild.png">
+
+### Building docker images 
+
+```
+❯ cd  pythoncode
+❯ ls
+Dockerfile hello.py
+❯ docker  build  -t   python:ashuv1  .
+Sending build context to Docker daemon  3.584kB
+Step 1/6 : FROM centos
+latest: Pulling from library/centos
+7a0437f04f83: Pull complete 
+Digest: sha256:5528e8b1b1719d34604c87e11dcd1c0a20bedf46e83b5632cdeac91b8c04efc1
+Status: Downloaded newer image for centos:latest
+ ---> 300e315adb2f
+Step 2/6 : MAINTAINER  ashutoshh@linux.com
+ ---> Running in fe7d11af5552
+Removing intermediate container f
+
+```
+
 
 
 
