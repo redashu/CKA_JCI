@@ -457,6 +457,24 @@ Removing intermediate container f
 
 ```
 
+### creating container 
+
+```
+❯ docker  run  -d -it   --name ashuc111  python:ashuv1
+089bec16bea33b436843b8dbacf7da123369b02d24e17511ec43aa551a6084aa
+❯ docker  ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS          PORTS     NAMES
+089bec16bea3   python:ashuv1   "python3 /mycode/hel…"   26 seconds ago   Up 23 seconds             ashuc111
+
+```
+
+### checking output of running container 
+
+```
+docker logs -f  ashuc111
+
+```
+
 
 
 
