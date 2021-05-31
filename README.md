@@ -1,1 +1,4 @@
-# CKA_JCI
+# Intro to app 
+
+<img src="app.png">
+
