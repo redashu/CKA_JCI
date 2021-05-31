@@ -1,0 +1,13 @@
+ssh-keygen 
+# keep hitting enter but only time you have do it 
+#---------------------------
+
+## FROM here 
+ssh-copy-id  test@75.101.198.8
+# JciDocker099 password of test 
+## creating context 
+docker  context  create  t1  --docker host="ssh://test@75.101.198.83"
+
+## switch context 
+
+docker context use t1
