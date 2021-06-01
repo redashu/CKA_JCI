@@ -1,0 +1,11 @@
+apiVersion: v1  # master node apiserver version 
+kind: Pod  # making a request related to POD --create/delete/update
+metadata:  # info about POD 
+ name: ashupod-123  # name of the POD 
+spec: # info about your application / -container/security/storage 
+ containers: 
+ - name: ashuc1 # name of my container 
+   image: dockerashu/httpd:JCIashuv1 # image from Docker hub 
+   ports: # field is optional 
+   - containerPort: 80 # container app port number 
+ 
