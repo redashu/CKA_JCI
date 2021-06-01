@@ -78,5 +78,50 @@ Removing login credentials for https://index.docker.io/v1/
 
 ```
 
+## Container oriented problem for app deploy 
+
+<img src="orch.png">
+
+##  Container orchestraion tools / engine 
+
+<img src="cont_orch.png">
+
+# Kubernetes k8s 
+
+## Level 1 architecutre 
+
+<img src="k8s1.png">
+
+## k8s apiserver 
+
+<img src="apiserver.png">
+
+## kube-schedular 
+
+<img src="kubesche.png">
+
+## Kube-controller-manager 
+
+<img src="kubecm.png">
+
+### node-controller 
+
+<img src="nc.png">
+
+## replication controller 
+
+<img src="rc.png">
+
+## ETCD the brain of k8s 
+
+<img src="etcd.png">
+
+## CNI -- for container networking 
+
+<img src="cni.png">
+
+## Minion kube-proxy + CNI + kubelet 
+
+<img src="minion.png">
 
 
