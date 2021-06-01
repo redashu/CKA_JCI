@@ -124,4 +124,49 @@ Removing login credentials for https://index.docker.io/v1/
 
 <img src="minion.png">
 
+## kubernetes cluster Deployment methods 
+
+<img src="k8s_deploy.png">
+
+## Minikube based local cluster deployment 
+
+<img src="minikube.png">
+
+## Installing Minikube in mac 
+
+```
+❯ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 60.3M  100 60.3M    0     0  6583k      0  0:00:09  0:00:09 --:--:-- 7470k
+❯ sudo install minikube-darwin-amd64 /usr/local/bin/minikube
+Password:
+❯ minikube version
+minikube version: v1.20.0
+commit: c61663e942ec43b20e8e70839dcca52e44cd85ae
+
+```
+
+## creating cluster 
+
+
+```
+ minikube  start  --driver=docker
+😄  minikube v1.20.0 on Darwin 11.2.3
+✨  Using the docker driver based on user configuration
+👍  Starting control plane node minikube in cluster minikube
+🚜  Pulling base image ...
+🔥  Creating docker container (CPUs=2, Memory=1988MB) ...
+🐳  Preparing Kubernetes v1.20.2 on Docker 20.10.6 ...
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...
+    ▪ Configuring RBAC rules ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: storage-provisioner, default-storageclass
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+
+```
+
+
 
