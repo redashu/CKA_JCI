@@ -169,4 +169,193 @@ commit: c61663e942ec43b20e8e70839dcca52e44cd85ae
 ```
 
 
+## Installing k8s cluster using kubeadm 
+
+## Note: common.sh needs to run in all the machine then 
+
+### only on the system you want to configure as master node 
+
+#### NOte: In CKA. exam you just need to do --  kubeadm   init  --pod-network-cidr=192.168.0.0/16
+
+
+```
+[root@ip-172-31-41-71 ~]# kubeadm   init  --pod-network-cidr=192.168.0.0/16   --apiserver-advertise-address=0.0.0.0  --apiserver-cert-extra-sans=34.237.219.131,172.31.41.71  
+[init] Using Kubernetes version: v1.21.1
+[preflight] Running pre-flight checks
+	[WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+	[WARNING FileExisting-tc]: tc not found in system path
+[preflight] Pulling images required for setting up a Kubernetes cluster
+[preflight] This might take a minute or two, depending on the speed of your internet connection
+[preflight] You can also perform this action in beforehand using 'kubeadm config images pull'
+[certs] Using certificateDir folder "/etc/kubernetes/pki"
+[certs] Generating "ca" certif
+
+
+```
+
+## ON kubernetes master 
+
+### COnfiguration directory 
+
+```
+[root@ip-172-31-41-71 kubernetes]# cd  /etc/kubernetes/
+[root@ip-172-31-41-71 kubernetes]# 
+[root@ip-172-31-41-71 kubernetes]# ls
+admin.conf  controller-manager.conf  kubelet.conf  manifests  pki  scheduler.conf
+[root@ip-172-31-41-71 kubernetes]# 
+
+```
+
+### Client shared certificate 
+
+```
+[root@ip-172-31-41-71 kubernetes]# ls
+admin.conf  controller-manager.conf  kubelet.conf  manifests  pki  scheduler.conf
+[root@ip-172-31-41-71 kubernetes]# cat  admin.conf 
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM1ekNDQWMrZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJeE1EWXdNVEE1TkRBMU1Gb1hEVE14TURVek1EQTVOREExTUZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGd
+    
+```
+
+### CNI deployment  
+
+```
+ wget https://docs.projectcalico.org/manifests/calico.yaml
+   48  ls
+   49  cat  calico.yaml 
+   
+ kubectl apply -f  calico.yaml
+ 
+ ```
+ 
+ ## From client system we are connecting to master node apiserver 
+ 
+ ```
+ 
+ ❯ kubectl   get   nodes  --kubeconfig  admin.conf
+NAME                            STATUS   ROLES                  AGE   VERSION
+ip-172-31-34-76.ec2.internal    Ready    <none>                 15m   v1.21.1
+ip-172-31-37-20.ec2.internal    Ready    <none>                 15m   v1.21.1
+ip-172-31-41-131.ec2.internal   Ready    <none>                 16m   v1.21.1
+ip-172-31-41-71.ec2.internal    Ready    control-plane,master   22m   v1.21.1
+
+```
+
+### checking version 
+
+```
+❯ kubectl   version  --kubeconfig  admin.conf
+Client Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.1", GitCommit:"5e58841cce77d4bc13713ad2b91fa0d961e69192", GitTreeState:"clean", BuildDate:"2021-05-12T14:18:45Z", GoVersion:"go1.16.4", Compiler:"gc", Platform:"darwin/amd64"}
+Server Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.1", GitCommit:"5e58841cce77d4bc13713ad2b91fa0d961e69192", GitTreeState:"clean", BuildDate:"2021-05-12T14:12:29Z", GoVersion:"go1.16.4", Compiler:"gc", Platform:"linux/amd64"}
+
+```
+
+### more checking 
+
+```
+❯ kubectl   cluster-info  --kubeconfig  admin.conf
+Kubernetes control plane is running at https://34.237.219.131:6443
+CoreDNS is running at https://34.237.219.131:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+```
+
+## Copy admin.conf to users home directory location 
+
+```
+ cp  -v admin.conf  /Users/fire/.kube/config
+admin.conf -> /Users/fire/.kube/config
+❯ kubectl  get  nodes
+NAME                            STATUS   ROLES                  AGE   VERSION
+ip-172-31-34-76.ec2.internal    Ready    <none>                 23m   v1.21.1
+ip-172-31-37-20.ec2.internal    Ready    <none>                 23m   v1.21.1
+ip-172-31-41-131.ec2.internal   Ready    <none>                 23m   v1.21.1
+ip-172-31-41-71.ec2.internal    Ready    control-plane,master   29m   v1.21.1
+❯ kubectl  cluster-info
+Kubernetes control plane is running at https://34.237.219.131:6443
+CoreDNS is running at https://34.237.219.131:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+```
+
+### Admin.conf right location 
+
+<img src="adm.png">
+
+### kubeadm based installion of  cluster is done 
+
+<img src="kcluster.png">
+
+## Docker depricated by k8s. -- reality check 
+
+<img src="reality.png">
+
+## Docker image build and push -- deploy 
+
+<img src="dep.png">
+
+## game of pods 
+
+<img src="pods.png">
+
+## a more close look to pod 
+
+<img src="pod1.png">
+
+### switching to minikube cluster 
+
+```
+
+ minikube  stop
+✋  Stopping node "minikube"  ...
+🛑  Powering off "minikube" via SSH ...
+🛑  1 nodes stopped.
+❯ minikube  start
+😄  minikube v1.20.0 on Darwin 11.2.3
+✨  Using the docker driver based on existing profile
+👍  Starting control plane node minikube in cluster minikube
+🚜  Pulling base image ...
+🔄  Restarting existing docker container for "minikube" ...
+🐳  Preparing Kubernetes v1.20.2 on Docker 20.10.6 ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: default-storageclass, storage-provisioner
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+❯ kubectl   get  nodes
+NAME       STATUS   ROLES                  AGE    VERSION
+minikube   Ready    control-plane,
+
+```
+
+### deploy 
+
+```
+
+❯ kubectl   get  nodes
+NAME       STATUS   ROLES                  AGE    VERSION
+minikube   Ready    control-plane,master   146m   v1.20.2
+❯ kubectl  get  pods
+No resources found in default namespace.
+❯ ls
+ashupod1.yaml
+❯ kubectl  apply -f  ashupod1.yaml --dry-run=client
+pod/ashupod-123 created (dry run)
+❯ kubectl  apply -f  ashupod1.yaml
+pod/ashupod-123 created
+❯ kubectl  get  pods
+NAME          READY   STATUS              RESTARTS   AGE
+ashupod-123   0/1     ContainerCreating   0          4s
+❯ kubectl  get  pods
+NAME          READY   STATUS              RESTARTS   AGE
+ashupod-123   0/1     ContainerCreating   0          12s
+❯ kubectl  get  pods -w
+NAME          READY   STATUS              RESTARTS   AGE
+ashupod-123   0/1     ContainerCreating   0          15s
+
+
+```
+
+
+ 
+ 
 
