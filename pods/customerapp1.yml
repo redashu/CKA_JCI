@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels: # label of pod 
+    run: ashupod1app1
+  name: ashupod1app1 # name of pod 
+spec:
+  containers:
+  - image: dockerashu/httpd:jcimultiappv1 # docker image
+    name: ashupod1app1 # name of container 
+    ports:
+    - containerPort: 80 # app port number 
+    env: # update / create ENV values 
+    - name: app # env variable in docker image 
+      value: app111  #  changing value from hello to app111 
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashusvcapp1
+  name: ashusvcapp1
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+  selector: # POd Finer 
+    run: ashupod1app1 # label of POD 
+  type: NodePort
+status:
+  loadBalancer: {}
