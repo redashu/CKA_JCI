@@ -161,6 +161,94 @@ pod "ashupod-123" deleted
 10041  kubectl  delete  pod  ashupod-123 
 
 ```
+## Deleting all the pods
+
+```
+ kubectl  delete pods --all
+pod "ashupod2" deleted
+pod "asifpod-httpd1" deleted
+pod "checkpod-1" deleted
+pod "harendra-123" deleted
+pod "kiran-testpod" deleted
+pod "prachipod" deleted
+
+```
+
+### YAML generation 
+
+```
+8  kubectl  run  ashupod2  --image=dockerashu/httpd:JCIashuv1  --port=80 --restart=Never   --dry-run=client 
+10049  kubectl  run  ashupod2  --image=dockerashu/httpd:JCIashuv1  --port=80  --dry-run=client  -o yaml 
+10050  history
+10051  kubectl  run  ashupod2  --image=dockerashu/httpd:JCIashuv1  --port=80  --dry-run=client  -o yaml 
+10052  ls
+10053  kubectl  run  ashupod2  --image=dockerashu/httpd:JCIashuv1  --port=80  --dry-run=client  -o yaml   >mypod.yml
+10054  ls
+10055  kubectl  run  ashupod2  --image=dockerashu/httpd:JCIashuv1  --port=80 
+
+```
+
+## Deployment of POD 
+
+```
+❯ ls
+ashupod1.yaml autopod.yaml  mypod.yml
+❯ kubectl  apply -f  autopod.yaml
+pod/ashupod2 created
+❯ kubectl  get  po
+NAME       READY   STATUS    RESTARTS   AGE
+ashupod2   1/1     Running   0          9s
+❯ kubectl  get  po -o wide
+NAME       READY   STATUS    RESTARTS   AGE   IP                NODE                           NOMINATED NODE   READINESS GATES
+ashupod2   1/1     Running   0          16s   192.168.252.144   ip-172-31-37-20.ec2.internal   <none>           <none>
+❯ kubectl  get  no
+NAME                            STATUS   ROLES                  AGE   VERSION
+ip-172-31-34-76.ec2.internal    Ready    <none>                 19h   v1.21.1
+ip-172-31-37-20.ec2.internal    Ready    <none>                 19h   v1.21.1
+ip-172-31-41-131.ec2.internal   Ready    <none>                 19h   v1.21.1
+ip-172-31-41-71.ec2.internal    Ready    control-plane,master   19h   v1.21.1
+
+```
+
+## JSOn generate 
+
+```
+  kubectl  run  ashupod2  --image=dockerashu/httpd:JCIashuv1  --port=80  --dry-run=client -o json 
+10068  kubectl  run  ashupod2  --image=dockerashu/httpd:JCIashuv1  --port=80  --dry-run=client -o json   >aa.json 
+
+```
+
+## accessing POd application 
+
+<img src="network.png">
+
+## making a tunnel b/w client and cluster 
+
+```
+❯ kubectl  port-forward  ashupod2   1233:80
+Forwarding from 127.0.0.1:1233 -> 80
+Forwarding from [::1]:1233 -> 80
+Handling connection for 1233
+Handling connection for 1233
+
+```
+
+## POd related network problems 
+
+<img src="podprb.png">
+
+## Introduction to service in k8s
+
+<img src="svc.png">
+
+## Service use labels of POd to find out 
+
+<img src="svclabel.png">
+
+
+## type of service 
+
+<img src="stype.png">
 
 
 
