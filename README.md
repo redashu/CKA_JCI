@@ -568,6 +568,46 @@ ss1    NodePort   10.96.223.6   <none>        1234:31669/TCP   4s
 
 ```
 
+## RC -- RS 
+
+<img src="rcrs.png">
+
+## Deployment in k8s
+
+<img src="dep.png">
+
+## Deployment in Reality 
+
+<img src="depreal.png">
+
+# Understanding context  
+
+<img src="context.png">
+
+## to check context 
+
+```
+❯ kubectl  config  get-contexts
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   ashu-jci
+*         minikube                      minikube     minikube           default
+
+
+```
+
+## switching context 
+
+```
+❯ kubectl  config  use-context     kubernetes-admin@kubernetes
+Switched to context "kubernetes-admin@kubernetes".
+❯ kubectl  config  get-contexts
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   ashu-jci
+          minikube                      minikube     minikube           default
+
+
+```
+
 
 
 
