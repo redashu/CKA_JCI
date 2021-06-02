@@ -433,6 +433,144 @@ ashusvcapp1   NodePort    10.111.250.181   <none>        1234:30029/TCP   18s   
 kubernetes    ClusterIP   10.96.0.1        <none>        443/TCP          43m   <none>
 
 ```
+# Namespace concept 
+
+<img src="ns.png">
+
+## Default namespace in k8s
+
+```
+❯ kubectl  get   namespace
+NAME              STATUS   AGE
+default           Active   23h
+kube-node-lease   Active   23h
+kube-public       Active   23h
+kube-system       Active   23h
+
+```
+
+## kube-system namespace -- for holding k8s cluster component as POD 
+
+```
+❯ kubectl  get  po  -n kube-system
+NAME                                                   READY   STATUS    RESTARTS   AGE
+calico-kube-controllers-78d6f96c7b-fjtqm               1/1     Running   1          23h
+calico-node-4b9c4                                      1/1     Running   2          23h
+calico-node-kl4lk                                      1/1     Running   1          23h
+calico-node-skdq9                                      1/1     Running   1          23h
+calico-node-zflnh                                      1/1     Running   1          23h
+coredns-558bd4d5db-7sgqs                               1/1     Running   1          23h
+coredns-558bd4d5db-r5jdn                               1/1     Running   0          20h
+etcd-ip-172-31-41-71.ec2.internal                      1/1     Running   2          23h
+kube-apiserver-ip-172-31-41-71.ec2.internal            1/1     Running   2          23h
+kube-controller-manager-ip-172-31-41-71.ec2.internal   1/1     Running   2          23h
+kube-proxy-89kd2                                       1/1     Running   2          23h
+kube-proxy-gc96s                                       1/1     Running   1          23h
+kube-proxy-hmlfg                                       1/1     Running   1          23h
+kube-proxy-wfxtq                                       1/1     Running   1          23h
+kube-scheduler-ip-172-31-41-71.ec2.internal            1/1     Running   2          23h
+
+```
+
+##  namespace creation 
+
+```
+❯ kubectl  create  namespace  ashu-jci
+namespace/ashu-jci created
+❯ kubectl  create  namespace  ashu-jci --dry-run=client -o yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: ashu-jci
+spec: {}
+status: {}
+❯ kubectl  get  ns
+NAME              STATUS   AGE
+ashu-jci          Active   23s
+
+```
+
+### Deploying POD /svc in custom namespace 
+
+```
+❯ kubectl apply -f  ashupod1.yaml
+pod/ashupod-123 created
+❯ kubectl  get  pod
+No resources found in default namespace.
+❯ kubectl  get  pod  -n  ashu-jci
+NAME          READY   STATUS    RESTARTS   AGE
+ashupod-123   1/1     Running   0          25s
+
+```
+
+## setting namespace from default - custom
+
+```
+❯ kubectl  config  set-context  --current  --namespace  ashu-jci
+Context "kubernetes-admin@kubernetes" modified.
+❯ kubectl  config  get-contexts
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   ashu-jci
+❯ kubectl   get   po
+NAME          READY   STATUS    RESTARTS   AGE
+ashupod-123   1/1     Running   0          3m58s
+
+```
+
+## Replication controller 
+
+<rc.png>
+
+## Deploy RC 
+
+```
+❯ kubectl  apply  -f  ashu-rc1.yaml
+replicationcontroller/ashurc123 created
+❯ kubectl   get   rc
+NAME        DESIRED   CURRENT   READY   AGE
+ashurc123   1         1         1       6s
+
+❯ kubectl  get  po
+NAME              READY   STATUS    RESTARTS   AGE
+ashurc123-v4kpf   1/1     Running   0          40s
+
+```
+
+### creating svc 
+
+```
+❯ kubectl  apply -f  ashu-rc1.yaml
+replicationcontroller/ashurc123 unchanged
+service/ashusvc1 created
+❯ kubectl  get   rc,svc
+NAME                              DESIRED   CURRENT   READY   AGE
+replicationcontroller/ashurc123   1         1         1       11m
+
+NAME               TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/ashusvc1   NodePort   10.107.158.202   <none>        1234:30290/TCP   6s
+
+
+
+```
+
+## creating service by using expose and label of pod will be matched automatically 
+
+```
+❯ kubectl   get  rc
+NAME        DESIRED   CURRENT   READY   AGE
+ashurc123   3         3         3       31m
+❯ kubectl  expose  rc  ashurc123  --type NodePort --port 1234 --target-port 80  --name ss1
+service/ss1 exposed
+❯ kubectl  get  svc
+NAME   TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+ss1    NodePort   10.96.223.6   <none>        1234:31669/TCP   4s
+
+```
+
+
+
+
 
 
  
