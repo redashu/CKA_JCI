@@ -312,5 +312,69 @@ status:
 ❯ kubectl   create   service  nodeport  ashusvc1   --tcp  1234:80  --dry-run=client -o yaml  >svc1.yaml
 
 ```
+## Nodeport understanding 
 
+<img src="np.png">
+
+## Troubleshooting svc to pod communication 
+
+```
+❯ kubectl  get  po  rajkiran123 --show-labels
+NAME          READY   STATUS    RESTARTS   AGE   LABELS
+rajkiran123   1/1     Running   0          70m   x=rajkiran789
+❯ 
+❯ kubectl  get  svc  rajkirans1 -o wide
+NAME         TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+rajkirans1   NodePort   10.107.96.20   <none>        2021:32584/TCP   59m   app=rajkirans1,x=rajkiran789
+
+
+```
+
+## Delete all api-resources 
+
+```
+❯ kubectl  delete all --all
+pod "ashupod-123" deleted
+pod "ashupod2" deleted
+pod "asifpod-httpd1" deleted
+pod "checkpod-1" deleted
+pod "harendra-123" deleted
+pod "kiran-testpod" deleted
+pod "nirupod" deleted
+pod "prachipod-2" deleted
+pod "prashantautopod" deleted
+pod "priyankapod-123" deleted
+pod "priyankapod-2" deleted
+pod "rajeshpod-day2" deleted
+pod "rajkiran123" deleted
+pod "sagarpod-123" deleted
+pod "saket2" deleted
+pod "shalompod-1" deleted
+pod "sumitpod-123" deleted
+pod "sumitpod2" deleted
+pod "tapender2" deleted
+pod "tarun-123" deleted
+pod "vipinpod1" deleted
+service "ashusvc1" deleted
+service "asifsvc1" deleted
+service "checksrvicenodeport" deleted
+service "harendrasvc1" deleted
+service "helloappsvc" deleted
+
+```
+
+## creating multi app docker images 
+
+```
+
+docker  build  -t   dockerashu/httpd:jcimultiappv1 -f  multiapp.dockerfile  .
+[+] Building 88.9s (13/13) FINISHED                                                                                          
+ => [internal] load build definition from multiapp.dockerfile                                                           0.1s
+ => => transferring dockerfile: 513B                                                                                    0.1s
+ => [internal] load .dockerignore                                                                                       0.1s
+ => => transferring context: 159B                                      
+ 
+ ```
+ 
+ 
 
