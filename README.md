@@ -375,6 +375,65 @@ docker  build  -t   dockerashu/httpd:jcimultiappv1 -f  multiapp.dockerfile  .
  => => transferring context: 159B                                      
  
  ```
+ ## push this image to docker hub 
  
+ ## Deploy two pod for different app using same docker image 
+ 
+ ### creating yaml 
+ 
+ ```
+ 10135  kubectl  run  ashupod1app1  --image=dockerashu/httpd:jcimultiappv1   --port 80 --dry-run=client -o yaml  >customerapp1.yml
+10136  kubectl  run  ashupod1app2  --image=dockerashu/httpd:jcimultiappv1   --port 80 --dry-run=client -o yaml  >customerapp2.yml
+```
+
+### creating service for pod1 app1 
+
+```
+❯ kubectl  create  service  nodeport  ashusvcapp1  --tcp 1234:80 --dry-run=client -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashusvcapp1
+  name: ashusvcapp1
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: ashusvcapp1
+  type: NodePort
+status:
+  loadBalancer: {}
+
+```
+
+### ONly for examination purpose 
+
+```
+kubectl  create  service  nodeport  ashusvcapp1  --tcp 1234:80 --dry-run=client -o yaml  >>customerapp1.yml
+
+```
+
+### deploying first app 
+
+```
+❯ kubectl  apply -f  customerapp1.yml
+pod/ashupod1app1 created
+service/ashusvcapp1 created
+❯ kubectl  get  po --show-labels
+NAME           READY   STATUS    RESTARTS   AGE   LABELS
+ashupod1app1   1/1     Running   0          11s   run=ashupod1app1
+❯ kubectl  get  svc  -o wide
+NAME          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+ashusvcapp1   NodePort    10.111.250.181   <none>        1234:30029/TCP   18s   run=ashupod1app1
+kubernetes    ClusterIP   10.96.0.1        <none>        443/TCP          43m   <none>
+
+```
+
+
  
 
