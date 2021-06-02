@@ -251,4 +251,66 @@ Handling connection for 1233
 <img src="stype.png">
 
 
+## label of pods 
+
+```
+❯ kubectl apply -f  ashupod1.yaml
+pod/ashupod-123 created
+❯ kubectl  get  po  ashupod-123  --show-labels
+NAME          READY   STATUS    RESTARTS   AGE   LABELS
+ashupod-123   1/1     Running   0          11s   <none>
+❯ kubectl  get  po   --show-labels
+NAME              READY   STATUS    RESTARTS   AGE     LABELS
+ashupod-123       1/1     Running   0          2m13s   <none>
+ashupod2          1/1     Running   0          36m     run=ashupod2
+checkpod-1        1/1     Running   0          32m     <none>
+harendra-123      1/1     Running   0          25m     <none>
+kiran-testpod     1/1     Running   0          23m     <none>
+nirupod           1/1     Running   0          35m     <none>
+prachipod-2       1/1     Running   0          35m     run=prachipod-2
+prashantautopod   1/1     Running   0          33m     run=prashantautopod
+
+```
+
+## updating label 
+
+```
+❯ kubectl  get  po  ashupod-123  --show-labels
+NAME          READY   STATUS    RESTARTS   AGE     LABELS
+ashupod-123   1/1     Running   0          3m53s   <none>
+❯ kubectl  apply  -f  ashupod1.yaml
+pod/ashupod-123 configured
+❯ kubectl  get  po  ashupod-123  --show-labels
+NAME          READY   STATUS    RESTARTS   AGE    LABELS
+ashupod-123   1/1     Running   0          4m7s   x=helloashu1
+
+
+```
+
+## nodeport service 
+
+```
+❯ kubectl   create   service  nodeport  ashusvc1   --tcp  1234:80  --dry-run=client -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashusvc1
+  name: ashusvc1
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: ashusvc1
+  type: NodePort
+status:
+  loadBalancer: {}
+❯ kubectl   create   service  nodeport  ashusvc1   --tcp  1234:80  --dry-run=client -o yaml  >svc1.yaml
+
+```
+
 
