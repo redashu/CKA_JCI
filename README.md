@@ -572,6 +572,55 @@ ashudb   ClusterIP   10.103.161.14   <none>        3306/TCP   56s
 
 ```
 
+## creting yaml of webapp 
+
+```
+kubectl  create  deployment  ashuwebapp1  --image=wordpress:4.8-apache --namespace ashu-jci  --dry-run=client -o yaml  >webapp.yaml
+
+```
+
+### creating service 
+
+```
+❯ kubectl  get  deploy
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+ashudb        1/1     1            1           44m
+ashuwebapp1   1/1     1            1           79s
+❯ kubectl  get  po
+NAME                           READY   STATUS    RESTARTS   AGE
+ashudb-778b46674-jxw4r         1/1     Running   0          44m
+ashuwebapp1-66c9547dc5-72v4f   1/1     Running   0          84s
+❯ kubectl  get  svc
+NAME     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+ashudb   ClusterIP   10.103.161.14   <none>        3306/TCP   33m
+❯ kubectl  expose deploy  ashuwebapp1 --type NodePort  --port 80 --dry-run=client -o yaml  >websvc.yml
+❯ 
+❯ 
+❯ kubectl  expose deploy  ashuwebapp1 --type NodePort  --port 80 --namespace ashu-jci --dry-run=client -o yaml  >websvc.yml
+❯ 
+
+```
+
+###
+
+```
+❯ kubectl apply -f  websvc.yml
+service/ashuwebapp1 created
+❯ kubectl  get deploy,pod,svc
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/ashudb        1/1     1            1           46m
+deployment.apps/ashuwebapp1   1/1     1            1           3m13s
+
+NAME                               READY   STATUS    RESTARTS   AGE
+pod/ashudb-778b46674-jxw4r         1/1     Running   0          46m
+pod/ashuwebapp1-66c9547dc5-72v4f   1/1     Running   0          3m13s
+
+NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/ashudb        ClusterIP   10.103.161.14   <none>        3306/TCP       35m
+service/ashuwebapp1   NodePort    10.99.134.217   <none>        80:31454/TCP   8s
+
+```
+
 
  
  
