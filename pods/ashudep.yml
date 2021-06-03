@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels: # label of deployments 
+    x: ashuwebapp # this label can be different from pod labels 
+  name: ashuwebapp # name of deployment 
+  namespace: ashu-jci # name of namespace 
+spec:
+  replicas: 1 # no of pod by deployment 
+  selector:
+    matchLabels:
+      app: ashuwebapp # same as pod label 
+  strategy: {}
+  template: # deploy will use template to deploy pods 
+    metadata:
+      creationTimestamp: null
+      labels: # label of pod 
+        app: ashuwebapp
+    spec:
+      containers:
+      - image: dockerashu/httpd:jcimultiappv1 # image from docker hub 
+        name: httpd # container name 
+        env: # replace env variable value 
+        - name: app
+          value: app222 
+        resources: {}
+status: {}
+
+# creating service 
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    x: ashuwebapp
+  name: ashuwebapp
+  namespace: ashu-jci
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: ashuwebapp
+  type: NodePort
+status:
+  loadBalancer: {}

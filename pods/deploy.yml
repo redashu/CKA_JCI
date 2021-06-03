@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudep1
+  name: ashudep1
+  namespace: ashu-jci 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashudep1
+  strategy: {}
+  template: # like RC & RS deployment is also using template 
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashudep1
+    spec:
+      containers:
+      - image: dockerashu/httpd:jcimultiappv1
+        name: httpd
+        ports:
+        - containerPort: 80
+        env: 
+        - name: app
+          value: app222
+        resources: {}
+status: {}

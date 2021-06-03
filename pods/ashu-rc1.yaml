@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ReplicationController 
+metadata:
+ namespace: ashu-jci # namespace info 
+ name: ashurc123 # name of RC 
+ labels: # label of RC 
+  x: okgoogleashu 
+spec: 
+ replicas: 2 # how many pods you want to create 
+ template:  # info about pod 
+  metadata:
+   labels: # label of PODs 
+    x1: helloashupod
+  spec: 
+   containers:
+   - name: ashuc1
+     image: dockerashu/httpd:jcimultiappv1
+     ports:
+     - containerPort: 80
+     env: 
+     - name: app
+       value: app111 
+  
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashusvc1
+  name: ashusvc1
+  namespace: ashu-jci
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+  selector: # Pod Finder 
+     x1: helloashupod # label of POd 
+  type: NodePort
+status:
+  loadBalancer: {}
