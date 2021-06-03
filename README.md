@@ -403,4 +403,33 @@ svcc1   NodePort   10.105.183.228   <none>        80:32584/TCP   4s
 
 ```
 
+# Host Path volume type
+
+<img src="hostp.png">
+
+### deploy 
+
+```
+❯ kubectl  apply -f  hostp.yml
+pod/hostpod1 created
+❯ kubectl  get  po
+NAME       READY   STATUS    RESTARTS   AGE
+hostpod1   1/1     Running   0          3s
+❯ kubectl  exec -it  hostpdo1  -- sh
+Error from server (NotFound): pods "hostpdo1" not found
+❯ kubectl  exec -it  hostpod1  -- sh
+/ # cd  /myhostetc/
+/myhostetc # ls
+DIR_COLORS               default                  issue.net                passwd                   selinux
+DIR_COLORS.256color      depmod.d                 krb5.conf                passwd-                  services
+DIR_COLORS.lightbgcolor  dhcp                     krb5.conf.d              pkcs11                   sestatus.conf
+GREP_COLORS              docker                   kubernetes               pki                      setuptool.d
+GeoIP.conf               docker-runtimes.d        ld.so.cache              plymouth                 shadow
+GeoIP.conf.default       dracut.conf              ld.so.conf               pm                       shadow-
+NetworkManager           dracut.conf.d            ld.so.conf.d             popt.d                   shells
+X11                      e2fsck.conf              libaudit.conf            postfix                  skel
+acpi                     environment  
+
+```
+
 
