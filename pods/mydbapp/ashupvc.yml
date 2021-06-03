@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: ashupvc
+ namespace: ashu-jci 
+spec: 
+ accessModes:
+ - ReadWriteMany 
+ storageClassName: fast 
+ resources: # sending a request to apiserver to check the best pv matched 
+  requests:
+   storage: 10Gi 

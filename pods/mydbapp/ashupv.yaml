@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolume 
+metadata:
+ name: ashupv-123 
+spec: 
+ capacity:
+  storage: 10Gi # size of Pv as per k8s 5Gi , 3Gi , 7 , 20Gi 
+ accessModes:
+ - ReadWriteOnce  # RWO , ReadWriteMany
+ storageClassName: fast # fast , slow ,veryslow ,veryfast 
+ nfs: # source of data storage
+  path: /data/ashu  # directory present in NFS 
+  server: 172.31.46.58 # NFS server IP 
