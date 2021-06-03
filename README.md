@@ -621,6 +621,99 @@ service/ashuwebapp1   NodePort    10.99.134.217   <none>        80:31454/TCP   8
 
 ```
 
+## service account 
+
+<img src="svcacc.png">
+## K8s dashboard deployment 
+
+```
+❯ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml
+namespace/kubernetes-dashboard created
+serviceaccount/kubernetes-dashboard created
+service/kubernetes-dashboard created
+secret/kubernetes-dashboard-certs created
+secret/kubernetes-dashboard-csrf created
+secret/kubernetes-dashboard-key-holder created
+configmap/kubernetes-dashboard-settings created
+role.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrole.rbac.authorization.k8s.io/kubernetes-dashboard created
+rolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+deployment.apps/kubernetes-dashboard created
+service/dashboard-metrics-scraper created
+
+
+```
+
+## checking 
+
+```
+❯ kubectl  get  all -n kubernetes-dashboard
+NAME                                             READY   STATUS    RESTARTS   AGE
+pod/dashboard-metrics-scraper-856586f554-dccwc   1/1     Running   0          18s
+pod/kubernetes-dashboard-78c79f97b4-ftx4q        1/1     Running   0          19s
+
+NAME                                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/dashboard-metrics-scraper   ClusterIP   10.107.214.55   <none>        8000/TCP   20s
+service/kubernetes-dashboard        ClusterIP   10.108.33.170   <none>        443/TCP    27s
+
+NAME                                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/dashboard-metrics-scraper   1/1     1            1           19s
+deployment.apps/kubernetes-dashboard        1/1     1            1           20s
+
+NAME                                                   DESIRED   CURRENT   READY   AGE
+replicaset.apps/dashboard-metrics-scraper-856586f554   1         1         1       19s
+replicaset.apps/kubernetes-dashboard-78c79f97b4        1         1         1       20s
+❯ kubectl  get sa  -n kubernetes-dashboard
+NAME                   SECRETS   AGE
+default                1         45s
+kubernetes-dashboard   1         44s
+❯ kubectl  get secret   -n kubernetes-dashboard
+NAME                               TYPE                                  DATA   AGE
+default-token-6sdnw                kubernetes.io/service-account-token   3      55s
+kubernetes-dashboard-certs         Opaque                                0      52s
+kubernetes-dashboard-csrf          Opaque                                1      52s
+kubernetes-dashboard-key-holder    Opaque                                2      51s
+kubernetes-dashboard-token-kmd4f   kubernetes.io/service-account-token   3      54s
+
+```
+
+### change svc to nodeport 
+
+```
+❯ kubectl  edit   svc  kubernetes-dashboard       -n kubernetes-dashboard
+service/kubernetes-dashboard edited
+❯ kubectl  get  svc   -n kubernetes-dashboard
+NAME                        TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE
+dashboard-metrics-scraper   ClusterIP   10.107.214.55   <none>        8000/TCP        2m47s
+kubernetes-dashboard        NodePort    10.108.33.170   <none>        443:31336/TCP   2m54s
+
+░▒▓ ~ ······································
+
+```
+
+### dashboard summary 
+
+```
+10270  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml
+10271  kubectl  get  ns
+10272  kubectl  get  all -n kubernetes-dashboard 
+10273  kubectl  get sa  -n kubernetes-dashboard 
+10274  kubectl  get secret   -n kubernetes-dashboard 
+10275  kubectl  get  po 
+10276  kubectl  get  po  -n kubernetes-dashboard 
+10277  kubectl  get  svc   -n kubernetes-dashboard 
+10278  kubectl  edit   svc  kubernetes-dashboard       -n kubernetes-dashboard 
+10279  kubectl  get  svc   -n kubernetes-dashboard 
+10280  kubectl  get no
+10281  kubectl  get  secret   -n kubernetes-dashboard 
+10282  kubectl  describe  secret   kubernetes-dashboard-token-kmd4f   -n kubernetes-dashboard 
+10283  kubectl  get  sa   -n kubernetes-dashboard 
+
+
+```
+
+
 
  
  
