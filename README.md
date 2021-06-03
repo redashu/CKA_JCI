@@ -228,6 +228,43 @@ deployment.apps/ashuwebapp image updated
 
 ```
 
+## History and current revesion number 
+
+```
+❯ kubectl  rollout history deployment   ashuwebapp
+deployment.apps/ashuwebapp 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
+
+❯ kubectl  describe deploy ashuwebapp
+Name:                   ashuwebapp
+Namespace:              ashu-jci
+CreationTimestamp:      Thu, 03 Jun 2021 09:39:25 +0530
+Labels:                 x=ashuwebapp
+Annotations:            deployment.kubernetes.io/revision: 2
+Selector:               app=ashuwebapp
+
+```
+
+### rolling back by using revision number -- 
+
+## Note: you can also set image to roll back 
+
+```
+❯ kubectl  rollout undo deployment   ashuwebapp --to-revision=1
+deployment.apps/ashuwebapp rolled back
+❯ kubectl  get  po
+NAME                          READY   STATUS        RESTARTS   AGE
+ashuwebapp-5cfc9f66c9-p65zx   1/1     Running       0          17s
+ashuwebapp-5cfc9f66c9-r4ndb   1/1     Running       0          20s
+ashuwebapp-5cfc9f66c9-rxq8b   1/1     Running       0          22s
+ashuwebapp-75dcd5c7b6-h2g7b   1/1     Terminating   0          5m29s
+ashuwebapp-75dcd5c7b6-lbdq6   1/1     Terminating   0          5m27s
+ashuwebapp-75dcd5c7b6-vvpgc   1/1     Terminating   0          5m25s
+
+```
+
 
 
 
