@@ -265,7 +265,142 @@ ashuwebapp-75dcd5c7b6-vvpgc   1/1     Terminating   0          5m25s
 
 ```
 
+# Storage in k8s 
+
+<img src="st.png">
+
+## k8s volume concepts 
+
+<img src="volume.png">
 
 
+### volume docs link 
+
+[link](https://kubernetes.io/docs/concepts/storage/volumes/)
+
+
+## EmptyDir volume type
+
+<img src="emp.png">
+
+### creating pod 
+
+```
+
+kubectl   run  emppod  --image=alpine --namespace ashu-jci  --dry-run=client -o yaml  >empvol.yml
+```
+
+### replacing parent process of container in k8s
+
+<img src="pp.png">
+
+## deploying pod 
+
+```
+❯ kubectl  apply -f empvol.yml
+pod/emppod created
+❯ kubectl  get  po
+NAME     READY   STATUS    RESTARTS   AGE
+emppod   1/1     Running   0          9s
+
+```
+
+## checking volume mounts 
+
+```
+❯ kubectl describe pod  emppod
+Name:         emppod
+Namespace:    ashu-jci
+Priority:     0
+Node:         ip-172-31-41-131.ec2.internal/172.31.41.131
+Start Time:   Thu, 03 Jun 2021 12:25:24 +0530
+Labels:       run=emppod
+Annotations:  cni.projectcalico.org/podIP: 192.168.249.105/32
+Status:       Running
+IP:           192.168.249.105
+IPs:
+  IP:  192.168.249.105
+Containers:
+  emppod:
+    Container ID:  docker://790ecc0d7f53591a6ed421cb0752128391ad4a93f5352eb65964fca31e01fd17
+    Image:         alpine
+    Image ID:      docker-pullable://alpine@sha256:69e70a79f2d41ab5d637de98c1e0b055206ba40a8145e7bddb55ccc04e13cf8f
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/sh
+      -c
+      while true;do echo hii >>/mnt/jci/a.txt;sleep 5;done
+    State:          Running
+      Started:      Thu, 03 Jun 2021 12:25:26 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /mnt/jci from ashuvol1 (rw)
+      /var/run/secrets/kubernetes.io/servicea
+      
+```
+
+### checking pods 
+
+```
+10137  kubectl  exec  -it  emppod  -- sh 
+❯ kubectl  exec  -it  emppod  -- sh
+/ # cd /mnt/jci/
+/mnt/jci # ls
+a.txt
+/mnt/jci # exit
+
+```
+
+## Pod with more than one container -- helper / sidecar container 
+
+<img src="sidecar.png">
+
+## adding. sidecar container 
+
+```
+❯ kubectl  get  po
+NAME     READY   STATUS    RESTARTS   AGE
+emppod   1/1     Running   0          24m
+❯ kubectl  apply -f empvol.yml
+The Pod "emppod" is invalid: spec.containers: Forbidden: pod updates may not add or remove containers
+❯ kubectl  replace -f  empvol.yml --force
+pod "emppod" deleted
+pod/emppod replaced
+
+```
+
+### accessing two container inside a single pod 
+
+```
+❯ kubectl  get  po
+NAME     READY   STATUS    RESTARTS   AGE
+emppod   2/2     Running   0          93s
+❯ kubectl exec -it  emppod  -c  ashuc1  --  bash
+root@emppod:/# cd /usr/share/nginx/html/
+root@emppod:/usr/share/nginx/html# ls
+a.txt
+root@emppod:/usr/share/nginx/html# exit
+exit
+❯ kubectl exec -it  emppod  -c  emppod  --  sh
+/ # cd /mnt/jci/
+/mnt/jci # ls
+a.txt
+/mnt/jci # exit
+
+```
+
+### creating serivce 
+
+```
+ kubectl  expose pod  emppod  --type NodePort --port 80 --target-port 80 --name svcc1
+service/svcc1 exposed
+❯ kubectl  get  svc
+NAME    TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+svcc1   NodePort   10.105.183.228   <none>        80:32584/TCP   4s
+
+```
 
 
