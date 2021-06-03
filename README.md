@@ -432,4 +432,146 @@ acpi                     environment
 
 ```
 
+## PV & PVC -- with demo 
 
+<img src="demo.png">
+
+## creating pv 
+
+```
+❯ kubectl  get  pv
+NAME             CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                     STORAGECLASS   REASON   AGE
+ashupv-123       10Gi       RWO            Retain           Available                             fast                    16m
+asifpv-123       5Gi        RWX            Retain           Bound       asif/asifpvc              fast                    10m
+hppv-123         10Gi       RWO            Retain           Available                             fast                    8m14s
+kiranpv          10Gi       RWX            Retain           Available                             veryfast                79s
+prachipv-1       5Gi        RWO            Retain           Bound       prachi-jci/prachipvc      fast                    15m
+prashantpv-123   7Gi        RWX            Retain           Bound       priyankajci/priyankapvc   fast                    11m
+priyankapv-123   3Gi        RWX            Retain           Available                             fast                    14m
+rajeshpod-day2   5Gi        RWO            Retain           Available                             fast                    11m
+rajeshpv         5Gi        RWO            Retain           Bound       rajeshns/rajeshpvc        fast                    8m57s
+rajkpv-1010      7Gi        ROX            Retain           Available                             fast                    12m
+sagarpv-123      10Gi       RWX            Retain           Bound       ashu-jci/ashupvc          fast                    11m
+saket12          8Gi        RWX            Retain           Available                             fast                    12m
+shalompv         10Gi       RWO            Retain           Available                             fast                    16m
+tape123          7Gi        RWX            Retain           Bound       jci-tapender/tapepvc      fast                    13m
+tarupv-123       10Gi       RWO            Retain           Bound       harendra/hppvc            fast                    9m31s
+vipinpv-123      10Gi       RWO            Retain           Available                     
+
+```
+
+## claiming pv using pvc 
+
+```
+❯ kubectl  get  pvc
+NAME      STATUS   VOLUME        CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+ashupvc   Bound    sagarpv-123   10Gi       RWX            fast           2m24s
+
+```
+
+## Deploy yaml of mysql DB 
+
+<img src="dbneed.png">
+
+
+
+```
+ kubectl  create   deployment  ashudb  --image=mysql:5.6  --dry-run=client -o yaml   >ashudb.yaml
+ 
+```
+
+## INtroduction to secret 
+
+<img src="secret.png">
+
+
+## creating secret for db password storage purpose 
+
+```
+❯ kubectl  create  secret   generic   ashudbsec   --from-literal  passkey1=JciDb088  --namespace ashu-jci
+secret/ashudbsec created
+❯ kubectl  get  secret
+NAME                  TYPE                                  DATA   AGE
+ashudbsec             Opaque                                1      8s
+default-token-gxn2k   kubernetes.io/service-account-token   3      25h
+
+```
+
+### deploying db deployment file 
+
+```
+❯ kubectl apply -f  ashudb.yaml --dry-run=client
+deployment.apps/ashudb created (dry run)
+❯ kubectl apply -f  ashudb.yaml
+deployment.apps/ashudb created
+❯ kubectl  get deploy
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+ashudb   1/1     1            1           8s
+
+
+```
+
+### Creting clusterIP type service to DB pod 
+
+```
+❯ kubectl   get  deploy
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+ashudb   1/1     1            1           7m32s
+❯ kubectl  expose  deploy ashudb  --type ClusterIP  --port 3306  --dry-run=client -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb
+spec:
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: ashudb
+  type: ClusterIP
+status:
+  loadBalancer: {}
+❯ kubectl  expose  deploy ashudb  --type ClusterIP  --port 3306  --dry-run=client -o yaml   >dbsvc.yaml
+❯ kubectl  expose  deploy ashudb  --type ClusterIP  --port 3306  --namespace ashu-jci --dry-run=client -o yaml   >dbsvc.yaml
+
+```
+
+
+## Deploy service 
+
+```
+ kubectl  apply -f  dbsvc.yaml
+service/ashudb created
+
+
+```
+
+## summary of mysql DB deployment 
+
+```
+❯ kubectl get  pvc
+NAME      STATUS   VOLUME        CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+ashupvc   Bound    sagarpv-123   10Gi       RWX            fast           44m
+❯ kubectl get  secret
+NAME                  TYPE                                  DATA   AGE
+ashudbsec             Opaque                                1      17m
+default-token-gxn2k   kubernetes.io/service-account-token   3      25h
+❯ kubectl get  deploy
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+ashudb   1/1     1            1           11m
+❯ kubectl get  po
+NAME                     READY   STATUS    RESTARTS   AGE
+ashudb-778b46674-jxw4r   1/1     Running   0          11m
+❯ kubectl get  svc
+NAME     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+ashudb   ClusterIP   10.103.161.14   <none>        3306/TCP   56s
+
+```
+
+
+ 
+ 
