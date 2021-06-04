@@ -404,3 +404,53 @@ search google.com cluster.local
 
 ```
 
+## COnfigMap in  k8s
+
+<img src="configmap.png">
+
+### creating configmap 
+
+```
+❯ kubectl  create  configmap  mycm  --from-literal  key1=1000 --dry-run=client -o yaml
+apiVersion: v1
+data:
+  key1: "1000"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: mycm
+❯ kubectl  create  configmap  mycm  --from-literal  key1=1000
+configmap/mycm created
+❯ kubectl   get  cm
+NAME               DATA   AGE
+kube-root-ca.crt   1      2d2h
+mycm               1      7s
+
+```
+
+## COnfig Map demo
+
+```
+0301  kubectl  create  configmap  mycm  --from-literal  key1=1000 --dry-run=client -o yaml 
+10302  kubectl  create  configmap  mycm  --from-literal  key1=1000 
+10303  kubectl   get  cm 
+10304  kubectl  run  ashupod99  --image=alpine  --dry-run=client -o yaml  >cm.yaml 
+10305  kubectl  explain pod.spec.container.env 
+10306  kubectl  explain pod.spec.containers.env 
+10307  kubectl  explain pod.spec.containers.env.valueFrom 
+10308  kubectl  get   po 
+10309  kubectl  get   po  ashupod2  -o yaml 
+10310  history
+10311  kubectl  apply -f  cm.yaml
+10312  kubectl  exec -it  ashupod99 -- sh 
+10313  kubectl  get   cm 
+❯ kubectl  exec -it  ashupod99 -- env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=ashupod99
+TERM=xterm
+myvar=1000
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+ASHUWEBAPP_SERVICE_HOST=10.108.176.50
+
+```
+
