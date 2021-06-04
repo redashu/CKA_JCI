@@ -32,3 +32,4 @@ spec:
             cpu: 512m
             memory: 1000Mi # 1Mib = 1000 KB 
 status: {}
+

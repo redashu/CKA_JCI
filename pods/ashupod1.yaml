@@ -21,4 +21,6 @@ spec: # info about your application / -container/security/storage
    image: dockerashu/httpd:JCIashuv1 # image from Docker hub 
    ports: # field is optional 
    - containerPort: 80 # container app port number 
+serviceAccount: default
+serviceAccountName: default
  

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: podwithaff
+  name: podwithaff
+  namespace: ashu-jci 
+spec:
+  affinity:
+   nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+     nodeSelectorTerms:
+     - matchExpressions: # Regex 
+       - key: x # any node which is having x as key 
+         operator: In # has 
+         values: # set of values 
+         - iamssd
+  containers:
+  - image: nginx
+    name: podwithaff
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

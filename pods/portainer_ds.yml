@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: DaemonSet  # replaced From Deployment to DaemonSet
+metadata:
+  creationTimestamp: null
+  labels: # label of DS
+    app: containermon
+  name: containermon # name of DS
+  namespace: ashu-jci # namespace info 
+spec:
+  #replicas: 1 # remove this line 
+  selector:
+    matchLabels:
+      app: containermon
+  #strategy: {} # remove this line also 
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: containermon
+    spec:
+      volumes:
+      - name: portvol1 # volume creating using docker socket 
+        hostPath:
+         path: /var/run/docker.sock
+         type: Socket
+      containers:
+      - image: portainer/portainer
+        name: portainer
+        ports:
+        - containerPort: 9000 # portainer web app port 
+        volumeMounts: # mounting volume 
+        - name: portvol1
+          mountPath: /var/run/docker.sock
+        resources: {}
+
