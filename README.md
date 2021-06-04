@@ -175,6 +175,136 @@ pod/ashupod2 created
 <img src="cka.png">
 
 
+# Auto scaling concept in k8s
+
+<img src="autos.png">
+
+## To add a new minion node in running cluster 
+
+### shell script in new node to be run 
+
+```
+#!/bin/bash 
+
+# enable CNI support  driver in linux kernel 
+modprobe br_netfilter
+echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
 
 
+# For installation only disable swap memory 
+
+swapoff  -a
+
+#  configuring repo -- in exam it will be done by examier   
+
+cat  <<EOF  >/etc/yum.repos.d/kube.repo
+[kube]
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+gpgcheck=0
+EOF
+
+# Install cre  
+
+yum  install docker  -y 
+systemctl start docker
+systemctl  enable docker  # default docker start at BOot 
+
+# Install kubeadm -- the official installer of Kubernetes cluster in multi node environment 
+
+yum  install kubeadm  -y
+# starting agent service 
+systemctl  start  kubelet 
+systemctl  enable   kubelet 
+
+```
+
+
+### generating token for minion on master node 
+
+```
+kubeadm  token create  --print-join-command 
+kubeadm join 172.31.41.71:6443 --token gsn4d4.ohq9jq9siacnqqxf --discovery-token-ca-cert-hash sha256:0db7
+```
+
+### Now pasting this in new node 
+
+```
+[root@ip-172-31-46-150 ~]# kubeadm join 172.31.41.71:6443 --token gsn4d4.ohq9jq9siacnqqxf --discovery-token-ca-cert-hash sha256:0db76f53fc2033845991b2453df100c14ed3ca4996ff267356668b3232166d87
+[preflight] Running pre-flight checks
+	[WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+	[WARNING FileExisting-tc]: tc not found in system path
+[preflight] Reading configuration from the cluster...
+[preflight] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Starting the kubelet
+[kubelet-start] Waiting for the kubelet to perform the TLS Bootstrap...
+
+This node has joined the cluster:
+* Certificate signing request was sent to apiserver and a response was received.
+* The Kubelet was informed of the new secure connection details.
+
+Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
+
+```
+
+## pod based auto scaling 
+
+<img src="hpa.png">
+
+### HPA understanding 
+
+<img src="hpa1.png">
+
+### hpa using metrics servers to auto scale the POD 
+
+<img src="flow.png">
+
+### Deploy Metric server in k8s 
+
+[linkgithub](https://github.com/kubernetes-sigs/metrics-server)
+
+```
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+```
+
+### Deploying a web app
+
+```
+❯ kubectl  apply -f  hpawebapp.yml  --dry-run=client
+deployment.apps/ashuwebapp created (dry run)
+❯ kubectl  apply -f  hpawebapp.yml
+deployment.apps/ashuwebapp created
+❯ kubectl  get  deploy
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+ashuwebapp   2/2     2            2           6s
+❯ kubectl  get  rs
+NAME                    DESIRED   CURRENT   READY   AGE
+ashuwebapp-65c7b94c68   2         2         2       13s
+❯ kubectl  get  pod
+NAME                          READY   STATUS    RESTARTS   AGE
+ashuwebapp-65c7b94c68-d8jlb   1/1     Running   0          16s
+ashuwebapp-65c7b94c68-tk9bq   1/1     Running   0          16s
+❯ kubectl  expose  deployment  ashuwebapp --type NodePort  --port 80
+service/ashuwebapp exposed
+❯ kubectl  get  svc
+NAME         TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+ashuwebapp   NodePort   10.108.176.50   <none>        80:31925/TCP   6s
+
+```
+
+## Hpa 
+
+```
+10247  kubectl  autoscale  deployment ashuwebapp  --cpu-percent=70   --min=2  --max=30  
+10248  kubectl  get  hpa
+❯ 
+❯ 
+❯ kubectl  get  hpa
+NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+ashuwebapp   Deployment/ashuwebapp   0%/70%    2         30        2          88s
+
+```
 
