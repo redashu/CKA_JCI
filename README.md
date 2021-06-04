@@ -97,6 +97,18 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ilg0ZXRFdVRxQ1VXajFQZDV3UlVYdk91VnNDWlVq
  
 ```
 
+### Creating a general user access by custom  -- kubeconfig file 
+
+<img src="access.png">
+
+## every k8s client need api-server certification to establish connection 
+
+<img src="apiserver.png">
+
+## Final view of config file data 
+
+<img src="config.png">
+
 
 
 
