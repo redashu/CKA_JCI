@@ -109,6 +109,67 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ilg0ZXRFdVRxQ1VXajFQZDV3UlVYdk91VnNDWlVq
 
 <img src="config.png">
 
+## creating a custom user access config file 
+
+### namespace creation 
+
+```
+❯ kubectl   create namespace   java-project
+namespace/java-project created
+❯ kubectl  get  sa,secret  -n java-project
+NAME                     SECRETS   AGE
+serviceaccount/default   1         16s
+
+NAME                         TYPE                                  DATA   AGE
+secret/default-token-k5862   kubernetes.io/service-account-token   3      16s
+
+```
+
+## Now time for creating role and rolebind then assign to service account 
+
+<img src="rolebb.png">
+
+### creating role 
+
+```
+ kubectl create role pod-reader --verb=get --verb=list --verb=watch --resource=pods   --dry-run=client -o yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: null
+  name: pod-reader
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+
+```
+
+### role created 
+
+```
+❯ kubectl  get  role  -n  java-project
+NAME         CREATED AT
+pod-reader   2021-06-04T06:39:43Z
+
+```
+
+### now using kubeconfig 
+
+```
+❯ kubectl  apply  -f  autopod.yaml  --kubeconfig  ~/Desktop/java.conf
+Error from server (Forbidden): error when creating "autopod.yaml": pods is forbidden: User "system:serviceaccount:java-project:default" cannot create resource "pods" in API group "" in the namespace "java-project"
+❯ kubectl  apply  -f  autopod.yaml  --kubeconfig  ~/Desktop/java.conf
+pod/ashupod2 created
+
+
+```
+
 
 
 
