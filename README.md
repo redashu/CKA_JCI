@@ -170,6 +170,10 @@ pod/ashupod2 created
 
 ```
 
+##  topics for CKA --- 
+
+<img src="cka.png">
+
 
 
 
