@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashuwebapp1
+  name: ashuwebapp1
+  namespace: ashu-jci
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashuwebapp1
+  strategy: {}
+  template: # used by deployment to create pods 
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashuwebapp1
+    spec:
+      containers:
+      - image: wordpress:4.8-apache
+        name: wordpress
+        env: # create / update env var data 
+        - name: WORDPRESS_DB_HOST # is getting use by backend app
+          value: ashudb # service name of DB deployment 
+        - name: WORDPRESS_DB_PASSWORD # is getting used by backend app 
+          valueFrom: # reading password from Secret 
+           secretKeyRef:
+            name: ashudbsec # name of secret 
+            key: passkey1  # key of secret 
+        resources: {}
+status: {}

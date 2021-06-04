@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels: # label of DB deployment 
+    app: ashudb
+  name: ashudb # name of Deployment 
+  namespace: ashu-jci # namespace info 
+spec:
+  replicas: 1 # single pod -- 
+  selector:
+    matchLabels:
+      app: ashudb
+  strategy: {}
+  template: # template will be use my Deployment to create POD 
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashudb
+    spec:
+      volumes: # creating volume 
+      - name: ashudbvol # name of volume 
+        persistentVolumeClaim: 
+         claimName: ashupvc # pvc --pv -- NFS
+      containers:
+      - image: mysql:5.6 # image from Docker hub 
+        name: mysql # name of container 
+        volumeMounts:
+        - name: ashudbvol # volume want to mount 
+          mountPath: /var/lib/mysql/ # default storage for MYSQL 
+        env: # create/ use env  variable 
+        - name: MYSQL_ROOT_PASSWORD # you can assign password for mysql root user
+          valueFrom: # calling from somewhere 
+           secretKeyRef: # choosing secret to call
+            name: ashudbsec # name of secret 
+            key: passkey1 # key of secret 
+
+        resources: {}
+status: {}

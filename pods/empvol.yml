@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: emppod
+  name: emppod # name of pod 
+  namespace: ashu-jci # namespace info 
+spec:
+  volumes: # to creat volume 
+  - name: ashuvol1 # name of volume to be created 
+    emptyDir: {} # randomally will create Directory in Minion node cs
+  containers: # to create container 
+  - image: nginx 
+    name: ashuc1
+    volumeMounts:
+    - name: ashuvol1
+      mountPath: /usr/share/nginx/html/ # default nginx location to read data 
+      readOnly: true
+  - image: alpine 
+    name: emppod # name of container 
+    volumeMounts: # to use volume created above 
+    - name: ashuvol1 
+      mountPath: /mnt/jci # inside container this location will be created
+    command: ["/bin/sh","-c","while true;do echo hii >>/mnt/jci/a.txt;sleep 5;done"]
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
