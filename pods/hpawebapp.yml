@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashuwebapp
+  name: ashuwebapp # name of deployment 
+  namespace: ashu-jci # namespace 
+spec:
+  replicas: 2 # no of pod always 
+  selector:
+    matchLabels:
+      app: ashuwebapp
+  strategy: {}
+  template: # template 
+    metadata:
+      creationTimestamp: null
+      labels: # label of PODs 
+        app: ashuwebapp
+    spec:
+      containers:
+      - image: dockerashu/httpd:jcimultiappv2
+        name: httpd # name of container 
+        env:  # introduction env var value 
+        - name: app # name of env 
+          value: app222 # value of env varible 
+        resources: 
+          requests: # default requst for any pod 
+            cpu: 256m # vcpu in milicore 
+            memory: 512Mi # RAM 
+          limits: # max limit for any pod in terms of vertical scalling
+            cpu: 512m
+            memory: 1000Mi # 1Mib = 1000 KB 
+status: {}
