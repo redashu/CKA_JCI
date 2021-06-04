@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  creationTimestamp: null
+  name: javarolebind # name of role binding 
+  namespace: java-project # namespace 
+roleRef:
+  apiGroup: ""
+  kind: Role
+  name: pod-reader # name of role what i created 
+subjects:
+- kind: ServiceAccount
+  name: default
+  apiGroup: ""
