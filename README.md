@@ -308,3 +308,99 @@ ashuwebapp   Deployment/ashuwebapp   0%/70%    2         30        2          88
 
 ```
 
+# DaemonSet 
+
+<img src="ds.png">
+
+## Deploying portainer -- as Daemonset
+
+```
+❯ kubectl  create  deployment  containermon   --image=portainer/portainer  --dry-run=client -o yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: containermon
+  name: containermon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: containermon
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: containermon
+    spec:
+      containers:
+      - image: portainer/portainer
+        name: portainer
+        resources: {}
+status: {}
+❯ kubectl  create  deployment  containermon   --image=portainer/portainer  --dry-run=client -o yaml   >portainer_ds.yml
+
+```
+
+## Deploying daemon sets 
+
+```
+❯ kubectl  apply -f  portainer_ds.yml
+daemonset.apps/containermon created
+❯ kubectl  get  ds
+NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+containermon   4         4         4       4            4           <none>          34s
+❯ kubectl  get  po -o wide
+NAME                          READY   STATUS    RESTARTS   AGE   IP                NODE                            NOMINATED NODE   READINESS GATES
+ashuwebapp-65c7b94c68-d8jlb   1/1     Running   0          39m   192.168.168.13    ip-172-31-46-150.ec2.internal   <none>           <none>
+ashuwebapp-65c7b94c68-tk9bq   1/1     Running   0          39m   192.168.168.12    ip-172-31-46-150.ec2.internal   <none>           <none>
+containermon-9dzn6            1/1     Running   0          44s   192.168.168.23    ip-172-31-46-150.ec2.internal   <none>           <none>
+containermon-d4d4g            1/1     Running   0          44s   192.168.252.147   ip-172-31-37-20.ec2.internal    <none>           <none>
+containermon-v6wfw            1/1     Running   0          44s   192.168.250.170   ip-172-31-34-76.ec2.internal    <none>           <none>
+containermon-vd7n2            1/1     Running   0          44s   192.168.249.77    ip-172-31-41-131.ec2.internal   <none>           <none>
+
+```
+
+## Daemon Set deletion 
+
+```
+❯ kubectl  delete pod  containermon-vd7n2
+pod "containermon-vd7n2" deleted
+❯ kubectl  get  po -o wide
+NAME                          READY   STATUS    RESTARTS   AGE     IP                NODE                            NOMINATED NODE   READINESS GATES
+ashuwebapp-65c7b94c68-d8jlb   1/1     Running   0          41m     192.168.168.13    ip-172-31-46-150.ec2.internal   <none>           <none>
+ashuwebapp-65c7b94c68-tk9bq   1/1     Running   0          41m     192.168.168.12    ip-172-31-46-150.ec2.internal   <none>           <none>
+containermon-9dzn6            1/1     Running   0          2m11s   192.168.168.23    ip-172-31-46-150.ec2.internal   <none>           <none>
+containermon-d4d4g            1/1     Running   0          2m11s   192.168.252.147   ip-172-31-37-20.ec2.internal    <none>           <none>
+containermon-ll7kw            1/1     Running   0          3s      192.168.249.72    ip-172-31-41-131.ec2.internal   <none>           <none>
+containermon-v6wfw            1/1     Running   0          2m11s   192.168.250.170   ip-172-31-34-76.ec2.internal    <none>           <none>
+❯ kubectl  get  ds
+NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+containermon   4         4         4       4            4           <none>          2m58s
+❯ kubectl  delete ds  containermon
+daemonset.apps "containermon" deleted
+
+```
+
+## Core DNS 
+
+<img src="coredns.png">
+
+## creating pod with Custom DNS configuration 
+
+```
+❯ kubectl replace  -f  autopod.yaml --force
+pod "ashupod2" deleted
+pod/ashupod2 replaced
+❯ kubectl exec -it  ashupod2 -- bash
+[root@ashupod2 /]# 
+[root@ashupod2 /]# cat  /etc/resolv.conf 
+nameserver 8.8.8.8
+nameserver 10.96.0.10
+search google.com cluster.local
+[root@ashupod2 /]# 
+
+```
+
